@@ -1,5 +1,4 @@
-from fbchat import Client
-import time
+from fbchat import *
 from fbchat.models import *
 
 def czytaj_plik():
@@ -23,47 +22,18 @@ def zwroc_haslo():
 
 class Bot(Client):
 
-    def wyloguj(self):
-        self.logout()
+    def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
+                  thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
+        print(message_object)
+        print(message_object.text)
 
-    def wyslij_wiadomosc(self,wiadomosc,odbiorca,typ_konwersacji):
-            self.send(Message(text=wiadomosc), thread_id=odbiorca, thread_type=typ_konwersacji)
-
-    def pobierz_wszystkie_konwersacje(self):
-        konwersacje = self.fetchAllUsers()
-        return konwersacje
-
-    def pobierz_najczestsze_konwersacje(self):
-        konwersacje = self.fetchThreadList()
-        return konwersacje
-    def reaguj_na_wiadomosc(self,bodziec,odpowiedz):
-        try:
-            while True:
-
-                for osoba in self.pobierz_najczestsze_konwersacje():
-                    Wiadomosci = self.fetchThreadMessages(thread_id=osoba.uid, limit=1)
-                    for wiadomosc in Wiadomosci:
-                        if wiadomosc.text == bodziec:
-                           self.wyslij_wiadomosc(odpowiedz, osoba.uid, osoba.type)
-                        else:
-                            pass
-                time.sleep(1)
-                print("Pracuje")
-        except KeyboardInterrupt:
-            print('interrupted!')
-
-
-
-
-
-class Uzytkownik:
-    pass
 
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
 
 
-Moj_Bot.reaguj_na_wiadomosc("Witam","Hej")
+
+Moj_Bot.listen()
 
 Moj_Bot.wyloguj()
 
