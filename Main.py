@@ -30,10 +30,6 @@ class Bot(Client):
 
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
-
-
-
 Moj_Bot.listen()
 
-Moj_Bot.wyloguj()
 
