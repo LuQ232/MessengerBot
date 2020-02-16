@@ -24,8 +24,11 @@ class Bot(Client):
 
     def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
-        print(message_object)
-        print(message_object.text)
+        print(thread_id)
+        if author_id == self.uid:
+            pass
+        elif message == "Hejka":
+            self.sendMessage("Witam!",thread_id,thread_type)
 
 
 
