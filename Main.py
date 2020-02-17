@@ -2,7 +2,7 @@ from fbchat import *
 from fbchat.models import *
 import requests
 from bs4 import BeautifulSoup
-
+import random
 
 def czytaj_plik():
     f = open("TEST.txt", "r")
@@ -61,6 +61,19 @@ class Bot(Client):
         url= new_str.split('"')[0]
         return url
 
+    def random_meme_url(self):
+        random_value = random.randint(1,4)
+        if random_value == 1:
+            return self.random_demotywator_url()
+        elif random_value == 2:
+            return self.random_jeja_url()
+        elif random_value == 3:
+            return self.random_mistrzowe_url()
+        elif random_value == 4:
+            return self.random_jajco_url()
+        else:
+            pass
+
     def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
         if author_id == self.uid:
@@ -69,14 +82,9 @@ class Bot(Client):
             self.sendMessage("Witam!",thread_id,thread_type)
         elif message.lower() =="spierdalaj":
             self.sendMessage("Sam spierdalaj!!", thread_id, thread_type)
-        elif message.lower() =="!demotywator":
-            self.sendRemoteFiles(self.random_demotywator_url(),None,thread_id,thread_type)
-        elif message.lower() == "!jeja":
-            self.sendRemoteFiles(self.random_jeja_url(), None, thread_id, thread_type)
-        elif message.lower() == "!mistrzowie":
-            self.sendRemoteFiles(self.random_mistrzowe_url(), None, thread_id, thread_type)
-        elif message.lower() == "!jajco":
-            self.sendRemoteFiles(self.random_jajco_url(), None, thread_id, thread_type)
+        elif message.lower() =="!mem":
+            self.sendRemoteFiles(self.random_meme_url(), None, thread_id, thread_type)
+
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
 Moj_Bot.listen()
