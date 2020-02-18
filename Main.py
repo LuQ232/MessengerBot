@@ -1,8 +1,11 @@
 from fbchat import *
 from fbchat.models import *
+import fbchat
 import requests
 from bs4 import BeautifulSoup
 import random
+
+commands= ["!mem","!cat","!kod","Hejka"]
 
 def czytaj_plik():
     f = open("TEST.txt", "r")
@@ -94,6 +97,12 @@ class Bot(Client):
         new_str = jeja_div_to_str.split('src="')[1]
         url = new_str.split('"')[0]
         return url
+    def tag_everyone(self,id):
+        for participant in self.fetchGroupInfo(id).get(f'{id}').participants:
+            print(participant)
+       # print(self.fetchGroupInfo(id).get(f'{id}').participants)
+
+        #print(type(self.fetchGroupInfo(id).get(f'{id}').participants))
 
     def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
@@ -109,8 +118,13 @@ class Bot(Client):
             self.sendRemoteFiles(self.random_cat_url(), None, thread_id, thread_type)
         elif message.lower() == "!kod":
             self.sendMessage("https://github.com/LuQ232/MessengerBot", thread_id, thread_type)
+        elif message.lower() == "@everyone":
+            #self.tag_everyone(thread_id)
+            pass
+
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
+Moj_Bot.tag_everyone(2721940484564018)
 Moj_Bot.listen()
 
 
