@@ -55,14 +55,25 @@ class Bot(Client):
     def random_jajco_url(self):
         page = requests.get("http://jajco.pl/rand")
         soup = BeautifulSoup(page.content, 'html.parser')
-        jeja_div = soup.find(class_='imgcut')
-        jeja_div_to_str = jeja_div.__str__()
-        new_str = jeja_div_to_str.split('src="')[1]
+        jajco_div = soup.find(class_='imgcut')
+        jajco_div_to_str = jajco_div.__str__()
+        new_str = jajco_div_to_str.split('src="')[1]
         url= new_str.split('"')[0]
         return url
 
+    def random_memy_url(self):
+        page = requests.get("https://memy.pl/losuj")
+        soup = BeautifulSoup(page.content, 'html.parser')
+        jeja_div = soup.find(class_='figure-item')
+        jeja_div_to_str = jeja_div.__str__()
+        new_str = jeja_div_to_str.split('src="')[1]
+        url = new_str.split('"')[0]
+        if (".mp4" in url) == True:
+            url = "https://memy.pl" + url
+        return url
+
     def random_meme_url(self):
-        random_value = random.randint(1,4)
+        random_value = random.randint(1,5)
         if random_value == 1:
             return self.random_demotywator_url()
         elif random_value == 2:
@@ -71,8 +82,18 @@ class Bot(Client):
             return self.random_mistrzowe_url()
         elif random_value == 4:
             return self.random_jajco_url()
+        elif random_value == 5:
+            return self.random_memy_url()
         else:
             pass
+    def random_cat_url(self):
+        page = requests.get("https://random.cat/")
+        soup = BeautifulSoup(page.content, 'html.parser')
+        jeja_div = soup.find("a")
+        jeja_div_to_str = jeja_div.__str__()
+        new_str = jeja_div_to_str.split('src="')[1]
+        url = new_str.split('"')[0]
+        return url
 
     def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
@@ -84,7 +105,10 @@ class Bot(Client):
             self.sendMessage("Sam spierdalaj!!", thread_id, thread_type)
         elif message.lower() =="!mem":
             self.sendRemoteFiles(self.random_meme_url(), None, thread_id, thread_type)
-
+        elif message.lower() =="!cat":
+            self.sendRemoteFiles(self.random_cat_url(), None, thread_id, thread_type)
+        elif message.lower() == "!kod":
+            self.sendMessage("https://github.com/LuQ232/MessengerBot", thread_id, thread_type)
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
 Moj_Bot.listen()
