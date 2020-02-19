@@ -55,6 +55,7 @@ class Bot(Client):
         url= new_str.split('" ')[0]
         url= "https://mistrzowie.org"+url
         return url
+
     def random_jajco_url(self):
         page = requests.get("http://jajco.pl/rand")
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -89,6 +90,7 @@ class Bot(Client):
             return self.random_memy_url()
         else:
             pass
+
     def random_cat_url(self):
         page = requests.get("https://random.cat/")
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -97,11 +99,38 @@ class Bot(Client):
         new_str = jeja_div_to_str.split('src="')[1]
         url = new_str.split('"')[0]
         return url
+
     def list_to_tag_everyone(self,id):
         list_of_participants = []
         for participant in self.fetchGroupInfo(id).get(f'{id}').participants:
             list_of_participants.append(Mention(participant,0,9))
         return list_of_participants
+
+    def polish_english_translator(word):
+        translated_words = []
+        url = "https://en.bab.la/dictionary/english-polish/" + word
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        meanings_div = soup.find(class_="sense-group-results")
+        meanings_str = meanings_div.__str__()
+        list = meanings_str.split('\n')
+
+        for meaning in list:
+            if "dictionary/polish-english/" in meaning or "/dictionary/english-polish/" in meaning:
+                pass
+            else:
+                list.remove(meaning)
+
+        list.pop()  # Im deleting last element on list (idk why its always there and always bad)?? weird solution but works
+
+        for meaning in list:
+            word = meaning.split("'>")[1].split("</a>")[0]
+            translated_words.append(word)
+        listToStr = '\n'.join(map(str, translated_words))
+        return listToStr
+
+
+
 
 
 
@@ -121,6 +150,10 @@ class Bot(Client):
             self.sendMessage("https://github.com/LuQ232/MessengerBot", thread_id, thread_type)
         elif  "@everyone" in message.lower():
              self.send(Message("@everyone", self.list_to_tag_everyone(thread_id)), thread_id, thread_type)
+        elif message.lower() in message.lower():
+            word = message.lower().split("!translate")[1]
+            self.sendMessage(self.polish_english_translator(word),thread_id,thread_type)
+
 
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
