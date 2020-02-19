@@ -119,12 +119,11 @@ class Bot(Client):
             self.sendRemoteFiles(self.random_cat_url(), None, thread_id, thread_type)
         elif message.lower() == "!kod":
             self.sendMessage("https://github.com/LuQ232/MessengerBot", thread_id, thread_type)
-        elif message.lower() == "test":
+        elif  "@everyone" in message.lower():
              self.send(Message("@everyone", self.list_to_tag_everyone(thread_id)), thread_id, thread_type)
-        #self.send()
+
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
-Moj_Bot.list_to_tag_everyone(2721940484564018)
 Moj_Bot.listen()
 
 
