@@ -26,6 +26,7 @@ def zwroc_haslo():
     return lista[1]
 
 
+
 class Bot(Client):
 
     def random_demotywator_url(self):
@@ -129,7 +130,10 @@ class Bot(Client):
         listToStr = '\n'.join(map(str, translated_words))
         return listToStr
 
-
+    def read_data_base(self,database_name):
+        with open(f'{database_name}') as f:
+            lines = f.read().splitlines()
+        return random.choice(lines)
 
 
 
@@ -138,26 +142,29 @@ class Bot(Client):
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
         if author_id == self.uid:
             pass
-        elif message.lower() =="hejka":
+        elif "hejka" in message.lower():
             self.sendMessage("Witam!",thread_id,thread_type)
-        elif message.lower() =="spierdalaj":
+        elif "spierdalaj" in message.lower():
             self.sendMessage("Sam spierdalaj!!", thread_id, thread_type)
-        elif message.lower() =="!mem":
+        elif "!mem" in message.lower():
             self.sendRemoteFiles(self.random_meme_url(), None, thread_id, thread_type)
-        elif message.lower() =="!cat":
+        elif "!cat" in message.lower():
             self.sendRemoteFiles(self.random_cat_url(), None, thread_id, thread_type)
-        elif message.lower() == "!kod":
+        elif "!kod" in message.lower():
             self.sendMessage("https://github.com/LuQ232/MessengerBot", thread_id, thread_type)
         elif  "@everyone" in message.lower():
              self.send(Message("@everyone", self.list_to_tag_everyone(thread_id)), thread_id, thread_type)
-        elif message.lower() in message.lower():
+        elif "!translate" in message.lower():
             word = message.lower().split("!translate")[1]
             self.sendMessage(self.polish_english_translator(word),thread_id,thread_type)
+        elif "seks" in message.lower():
+            self.send(self.read_data_base("urls_1.txt"),thread_id,thread_type)
 
 
 
-Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
-Moj_Bot.listen()
+#Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
+#Moj_Bot.listen()
+
 
 
 
