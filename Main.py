@@ -5,7 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import random
 
-commands= ["!mem","!cat","!kod","Hejka"]
+commands= ["!mem","!cat","!kod","Hejka","@everyone","!translate","!weather"]
+
 
 def czytaj_plik():
     f = open("TEST.txt", "r")
@@ -24,7 +25,6 @@ def zwroc_login():
 def zwroc_haslo():
     lista=czytaj_plik()
     return lista[1]
-
 
 
 class Bot(Client):
@@ -135,11 +135,35 @@ class Bot(Client):
             lines = f.read().splitlines()
         return random.choice(lines)
 
+    def weather_forecast(self,miejscowosc):
+        url = "https://www.meteoprog.pl/pl/weather/" + miejscowosc + "/#1"
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        #########################TODAY########################
+        div = soup.find(class_='sliderWeather')
+        today_str = div.__str__().split('data-daynumber="0" title="')[1]
+        today_description = today_str.split('">')[0]
+        today_tmp = today_description.replace("..", " do ", 1)
+        today = "Temperatura dziś wyniesie od " + today_tmp + "\n"
+        ########################TOMMOROW#######################
+        div = soup.find(class_='sliderWeather')
+        tommorow_str = div.__str__().split('data-daynumber="1" title="')[1]
+        tommorow_description = tommorow_str.split('">')[0]
+        tommorow_tmp = tommorow_description.replace("..", " do ", 1)
+        tommorow = "Temperatura jutro wyniesie od " + tommorow_tmp + "\n"
+        ###################DAY AFTER TOMMOROW##################
+        div = soup.find(class_='sliderWeather')
+        day_after_tommorow_str = div.__str__().split('data-daynumber="2" title="')[1]
+        day_after_tommorow_description = day_after_tommorow_str.split('">')[0]
+        day_after_tommorow_tmp = day_after_tommorow_description.replace("..", " do ", 1)
+        day_after_tommorow = "Temperatura pojutrze wyniesie od " + day_after_tommorow_tmp + "\n"
 
-
+        answear = today + tommorow + day_after_tommorow
+        return answear
 
     def onMessage(self, mid=None, author_id=None, message=None, message_object=None, thread_id=None,
                   thread_type=ThreadType.USER, ts=None, metadata=None, msg=None):
+
         if author_id == self.uid:
             pass
         elif "hejka" in message.lower():
@@ -155,16 +179,18 @@ class Bot(Client):
         elif  "@everyone" in message.lower():
              self.send(Message("@everyone", self.list_to_tag_everyone(thread_id)), thread_id, thread_type)
         elif "!translate" in message.lower():
-            word = message.lower().split("!translate")[1]
+            word = message.lower().split("!translate ")[1]
             self.sendMessage(self.polish_english_translator(word),thread_id,thread_type)
+        elif "!weather" in message.lower():
+            city = message.lower().split("!weather ")[1]
+            self.sendMessage(self.weather_forecast(city),thread_id,thread_type)
         elif "seks" in message.lower():
             self.send(self.read_data_base("urls_1.txt"),thread_id,thread_type)
 
 
 
-#Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
-#Moj_Bot.listen()
-
+Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
+Moj_Bot.listen()
 
 
 
