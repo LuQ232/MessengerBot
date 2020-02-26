@@ -185,7 +185,7 @@ class Bot(Client):
             city = message.lower().split("!weather ")[1]
             self.sendMessage(self.weather_forecast(city),thread_id,thread_type)
         elif "seks" in message.lower():
-            self.send(self.read_data_base("urls_1.txt"),thread_id,thread_type)
+            self.sendMessage(self.read_data_base("urls_1.txt"),thread_id,thread_type)
 
 
 
