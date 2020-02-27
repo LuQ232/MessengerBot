@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 import random
 
-commands= ["!mem","!cat","!kod","Hejka","@everyone","!translate","!weather"]
+commands= ["!mem","!cat","!kod","Hejka","@everyone","!translate","!weather","!omen"]
 
 
 def czytaj_plik():
@@ -101,6 +101,17 @@ class Bot(Client):
         url = new_str.split('"')[0]
         return url
 
+    def random_quote(self):
+        page = requests.get("https://joemonster.org/ciacho.php?typ=cytat")
+        soup = BeautifulSoup(page.content, 'html.parser')
+        quote_div = soup.find(id="main")
+        quote_div_to_str = quote_div.__str__()
+        new_str = quote_div_to_str.split('<b>')[1]
+        text = new_str.split('</b>')[0]
+        text = text.replace("</br>", '\n')
+        text = text.replace("<br>", '\n')
+        return text
+
     def list_to_tag_everyone(self,id):
         list_of_participants = []
         for participant in self.fetchGroupInfo(id).get(f'{id}').participants:
@@ -186,7 +197,8 @@ class Bot(Client):
             self.sendMessage(self.weather_forecast(city),thread_id,thread_type)
         elif "seks" in message.lower():
             self.sendMessage(self.read_data_base("urls_1.txt"),thread_id,thread_type)
-
+        elif "!omen" in message.lower():
+            self.sendMessage(self.random_quote(), thread_id, thread_type)
 
 
 Moj_Bot=Bot(zwroc_login(),zwroc_haslo())
